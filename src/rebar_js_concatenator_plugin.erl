@@ -117,7 +117,7 @@ build_each([{Destination, Sources, ConcatOptions} | Rest]) ->
                     case lists:member(uglify, ConcatOptions) of
                         true ->
                             MinifyDestination = lists:flatten(filename:basename(Destination, ".js") ++ ".min.js"),
-                            rebar_js_uglifier_plugin:compress_each([{Destination, MinifyDestination}]);
+                            rebar_js_uglifier_plugin:compress(Destination, MinifyDestination);
                         false ->
                             ok
                     end;
