@@ -5,8 +5,7 @@ application.
 
 ## Installation
 
-1. Specify ```rebar_js_concatenator_plugin``` as a dependency in your
-   ```rebar.config```.
+Specify ```rebar_js_concatenator_plugin``` as a dependency in your ```rebar.config```.
 
 ```erlang
 {deps, [
@@ -15,7 +14,7 @@ application.
 ]}.
 ```
 
-2. Configure as a plugin in your ```rebar.config```.
+Then, configure as a plugin in your ```rebar.config```.
 
 ```erlang
 {plugins, [rebar_js_concatenator_plugin]}.
