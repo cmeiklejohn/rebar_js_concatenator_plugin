@@ -1,0 +1,12 @@
+{application, rebar_js_concatenator_plugin,
+ [
+  {description, "Rebar JavaScript Concatenator Plugin"},
+  {vsn, "1"},
+  {registered, []},
+  {applications, [
+                  kernel,
+                  stdlib
+                 ]},
+  {mod, { rebar_js_concatenator_plugin, []}},
+  {env, []}
+ ]}.
