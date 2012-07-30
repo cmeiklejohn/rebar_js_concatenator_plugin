@@ -83,8 +83,7 @@ clean(Config, _AppFile) ->
     OutDir = option(out_dir, Options),
     Targets = [normalize_path(Destination, OutDir) ||
                {Destination, _Sources} <- Concatenations],
-    delete_each(Targets),
-    ok.
+    delete_each(Targets).
 
 %% ===================================================================
 %% Internal functions
