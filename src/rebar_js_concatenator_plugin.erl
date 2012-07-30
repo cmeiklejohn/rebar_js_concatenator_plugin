@@ -73,8 +73,9 @@ compile(Config, _AppFile) ->
     Concatenations = option(concatenations, Options),
     OutDir = option(out_dir, Options),
     DocRoot = option(doc_root, Options),
-    Targets = [{normalize_path(Destination, OutDir), normalize_paths(Sources, DocRoot)} ||
-               {Destination, Sources} <- Concatenations],
+    Targets = [{normalize_path(Destination, OutDir),
+                normalize_paths(Sources, DocRoot),
+                ConcatOptions} || {Destination, Sources, ConcatOptions} <- Concatenations],
     build_each(Targets).
 
 clean(Config, _AppFile) ->
@@ -82,7 +83,7 @@ clean(Config, _AppFile) ->
     Concatenations = option(concatenations, Options),
     OutDir = option(out_dir, Options),
     Targets = [normalize_path(Destination, OutDir) ||
-               {Destination, _Sources} <- Concatenations],
+               {Destination, _Sources, _ConcatOptions} <- Concatenations],
     delete_each(Targets).
 
 %% ===================================================================
@@ -106,13 +107,20 @@ normalize_path(Path, Basedir) ->
 
 build_each([]) ->
     ok;
-build_each([{Destination, Sources} | Rest]) ->
+build_each([{Destination, Sources, ConcatOptions} | Rest]) ->
     case any_needs_concat(Sources, Destination) of
         true ->
             Contents = [read(Source) || Source <- Sources],
             case file:write_file(Destination, lists:flatten(Contents), [write]) of
                 ok ->
-                    io:format("Built asset ~s~n", [Destination]);
+                    io:format("Built asset ~s~n", [Destination]),
+                    case lists:member(uglify, ConcatOptions) of
+                        true ->
+                            MinifyDestination = lists:flatten(filename:basename(Destination, ".js") ++ ".min.js"),
+                            rebar_js_uglifier_plugin:compress_each([{Destination, MinifyDestination}]);
+                        false ->
+                            ok
+                    end;
                 {error, Reason} ->
                     rebar_log:log(error, "Building asset ~s failed:~n  ~p~n",
                            [Destination, Reason]),
