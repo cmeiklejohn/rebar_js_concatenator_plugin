@@ -5,7 +5,8 @@
   {registered, []},
   {applications, [
                   kernel,
-                  stdlib
+                  stdlib,
+                  rebar_js_uglifier_plugin
                  ]},
   {mod, { rebar_js_concatenator_plugin, []}},
   {env, []}

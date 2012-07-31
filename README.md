@@ -29,7 +29,25 @@ Below is an example configuration with one concatenation.  In this example, ```v
     {out_dir,    "priv/assets/javascripts"},
     {doc_root,   "priv/assets/javascripts"},
     {concatenations, [
-        {"vendor.js", ["jquery-1.7.2.js", "ember-latest.js"]}
+        {"vendor.js", ["jquery-1.7.2.js", "ember-latest.js"], []}
+    ]}
+]}.
+```
+
+The following is an example which expands from the previous by uglifying
+assets once concatenated.  The uglifier plugin for concatenator makes a
+few assumptions: assets will end in .js, minified assets will end in
+.min.js in the same output dir.
+
+If you require more complex minification, take a look at
+[rebar_js_uglifier_plugin](https://github.com/cmeiklejohn/rebar_js_uglifier_plugin).
+
+```erlang
+{js_concatenator, [
+    {out_dir,    "priv/assets/javascripts"},
+    {doc_root,   "priv/assets/javascripts"},
+    {concatenations, [
+        {"vendor.js", ["jquery-1.7.2.js", "ember-latest.js"], [uglify]}
     ]}
 ]}.
 ```
