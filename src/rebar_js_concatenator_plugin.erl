@@ -131,9 +131,13 @@ build_each([{Destination, Sources, ConcatOptions} | Rest]) ->
     build_each(Rest).
 
 uglify(Source) ->
-    Destination = lists:flatten(filename:basename(Source, ".js") ++ ".min.js"),
+    Destination = uglify_destination(Source),
+    rebar_js_uglifier_plugin:compress(Source, Destination, []).
+
+uglify_destination(Source) ->
     Outdir = filename:dirname(Source),
-    rebar_js_uglifier_plugin:compress(Destination, normalize_path(Destination, Outdir), []).
+    Basename = filename:basename(Source, ".js"),
+    normalize_path(lists:flatten(Basename ++ ".min.js"), Outdir).
 
 read(File) ->
     case file:read_file(File) of
