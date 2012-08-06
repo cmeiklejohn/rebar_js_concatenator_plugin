@@ -61,8 +61,15 @@
 
 -module(rebar_js_concatenator_plugin).
 
+-ifdef(TEST).
+-include_lib("eunit/include/eunit.hrl").
+-endif.
+
 -export([compile/2,
          clean/2]).
+
+-export([concatenate/1,
+         concatenate_files/1]).
 
 %% ===================================================================
 %% Public API
@@ -85,6 +92,18 @@ clean(Config, _AppFile) ->
     Targets = [normalize_path(Destination, OutDir) ||
                {Destination, _Sources, _ConcatOptions} <- Concatenations],
     delete_each(Targets).
+
+%% @spec concatenate(list()) -> list()
+%% @doc Given a list of sources, concatenate and return.
+concatenate(Sources) ->
+    ListSources = [case is_binary(Source) of true ->
+                binary_to_list(Source); false -> Source end || Source <- Sources],
+    list_to_binary(lists:flatten(ListSources)).
+
+%% @spec concatenate_files(list()) -> list()
+%% @doc Given a list of source files, concatenate and return.
+concatenate_files(Sources) ->
+    concatenate([read(Source) || Source <- Sources]).
 
 %% ===================================================================
 %% Internal functions
@@ -110,8 +129,8 @@ build_each([]) ->
 build_each([{Destination, Sources, ConcatOptions} | Rest]) ->
     case any_needs_concat(Sources, Destination) of
         true ->
-            Contents = [read(Source) || Source <- Sources],
-            case file:write_file(Destination, lists:flatten(Contents), [write]) of
+            Contents = concatenate_files(Sources),
+            case file:write_file(Destination, Contents, [write]) of
                 ok ->
                     io:format("Built asset ~s~n", [Destination]),
                     case lists:member(uglify, ConcatOptions) of
@@ -166,3 +185,17 @@ delete_each([First | Rest]) ->
             rebar_log:log(error, "Failed to delete ~s: ~p\n", [First, Reason])
     end,
     delete_each(Rest).
+
+-ifdef(TEST).
+
+concatenate_test() ->
+    ListSource1 = "ping",
+    ListSource2 = "pong",
+    ListOutput = concatenate([ListSource1, ListSource2]),
+    ?assertEqual(<<"pingpong">>, ListOutput),
+    BinarySource1 = <<"ping">>,
+    BinarySource2 = <<"pong">>,
+    BinaryOutput = concatenate([BinarySource1, BinarySource2]),
+    ?assertEqual(<<"pingpong">>, BinaryOutput).
+
+-endif.
