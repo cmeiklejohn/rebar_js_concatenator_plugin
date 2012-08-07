@@ -93,7 +93,7 @@ clean(Config, _AppFile) ->
                {Destination, _Sources, _ConcatOptions} <- Concatenations],
     delete_each(Targets).
 
-%% @spec concatenate(list()) -> list()
+%% @spec concatenate(list()) -> binary()
 %% @doc Given a list of sources, concatenate and return.
 concatenate(Sources) ->
     ListSources = [case is_binary(Source) of true ->
