@@ -2,3 +2,4 @@ deps/*
 ebin/*
 .eunit/*
 doc/*
+.dialyzer.raw-output
