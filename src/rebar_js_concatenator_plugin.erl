@@ -93,15 +93,19 @@ clean(Config, _AppFile) ->
                {Destination, _Sources, _ConcatOptions} <- Concatenations],
     delete_each(Targets).
 
-%% @spec concatenate(list()) -> binary()
 %% @doc Given a list of sources, concatenate and return.
+-spec concatenate(list()) -> binary().
 concatenate(Sources) ->
-    ListSources = [case is_binary(Source) of true ->
-                binary_to_list(Source); false -> Source end || Source <- Sources],
+    ListSources = [case is_binary(Source) of
+                    true ->
+                        binary_to_list(Source);
+                    false ->
+                        Source
+                    end || Source <- Sources],
     list_to_binary(lists:flatten(ListSources)).
 
-%% @spec concatenate_files(list()) -> list()
 %% @doc Given a list of source files, concatenate and return.
+-spec concatenate_files(list()) -> list().
 concatenate_files(Sources) ->
     concatenate([read(Source) || Source <- Sources]).
 
