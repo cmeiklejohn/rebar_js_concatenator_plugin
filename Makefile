@@ -18,7 +18,7 @@ docs:
 	./rebar skip_deps=true doc
 
 APPS = kernel stdlib sasl erts ssl tools os_mon runtime_tools crypto inets \
-	xmerl webtool eunit syntax_tools compiler
+	xmerl webtool eunit syntax_tools compiler mnesia public_key
 PLT = $(HOME)/.rebar_js_concatenator_plugin_dialyzer_plt
 
 check_plt: compile

@@ -74,7 +74,7 @@
 %% ===================================================================
 %% Public API
 %% ===================================================================
-
+-spec compile(rebar_config:config(), _) -> ok.
 compile(Config, _AppFile) ->
     Options = options(Config),
     Concatenations = option(concatenations, Options),
@@ -85,6 +85,7 @@ compile(Config, _AppFile) ->
                 ConcatOptions} || {Destination, Sources, ConcatOptions} <- Concatenations],
     build_each(Targets).
 
+-spec clean(rebar_config:config(), _) -> ok.
 clean(Config, _AppFile) ->
     Options = options(Config),
     Concatenations = option(concatenations, Options),
@@ -94,7 +95,7 @@ clean(Config, _AppFile) ->
     delete_each(Targets).
 
 %% @doc Given a list of sources, concatenate and return.
--spec concatenate(list()) -> binary().
+-spec concatenate(list(iolist())) -> binary().
 concatenate(Sources) ->
     ListSources = [case is_binary(Source) of
                     true ->
@@ -105,7 +106,7 @@ concatenate(Sources) ->
     list_to_binary(lists:flatten(ListSources)).
 
 %% @doc Given a list of source files, concatenate and return.
--spec concatenate_files(list()) -> list().
+-spec concatenate_files(list(string())) -> binary().
 concatenate_files(Sources) ->
     concatenate([read(Source) || Source <- Sources]).
 
